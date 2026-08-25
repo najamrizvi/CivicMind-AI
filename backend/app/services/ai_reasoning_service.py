@@ -26,7 +26,31 @@ class AIReasoningService:
         if not settings.AI_MODEL:
             raise RuntimeError("AI_MODEL is not configured.")
 
-        self.client = genai.Client(api_key=settings.AI_API_KEY)
+        retry_options = types.HttpRetryOptions(
+            attempts=2,
+            initial_delay=1.0,
+            max_delay=4.0,
+            exp_base=2.0,
+            jitter=0.2,
+            http_status_codes=[
+                429,
+                500,
+                502,
+                503,
+                504,
+            ],
+        )
+
+        http_options = types.HttpOptions(
+            timeout=60000,
+            retry_options=retry_options,
+        )
+
+        self.client = genai.Client(
+            api_key=settings.AI_API_KEY,
+            http_options=http_options,
+        )
+
         self.model = settings.AI_MODEL
 
     def generate_reasoning(
@@ -34,8 +58,8 @@ class AIReasoningService:
         analytics: dict[str, Any],
     ) -> dict[str, str]:
         """
-        Generate structured administrative reasoning from trusted
-        civic analytics.
+        Generate structured administrative reasoning
+        from trusted civic analytics.
         """
 
         prompt = f"""
@@ -85,6 +109,7 @@ Do not include code fences.
                     response_mime_type="application/json",
                 ),
             )
+
         except Exception as exc:
             raise AIReasoningError(
                 "CivicMind AI reasoning service is currently unavailable."
@@ -100,6 +125,7 @@ Do not include code fences.
 
             if result is None:
                 result = json.loads(response.text)
+
         except Exception as exc:
             raise AIReasoningError(
                 "CivicMind AI returned an invalid structured response."
