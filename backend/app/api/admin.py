@@ -29,6 +29,7 @@ from app.schemas.status_history import (
 from app.schemas.insights import InsightsResponse
 from app.services.insights_service import generate_insights
 from app.services.ai_reasoning_service import (
+    AIReasoningError,
     ai_reasoning_service,
 )
 
@@ -347,13 +348,10 @@ def get_admin_ai_analysis(
             )
         )
 
-    except Exception as exc:
+    except AIReasoningError as exc:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail=(
-                "AI reasoning service is currently "
-                "unavailable."
-            ),
+            detail=str(exc),
         ) from exc
 
     return {
