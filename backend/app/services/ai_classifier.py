@@ -7,11 +7,18 @@
 #
 # Features:
 #   - Weighted phrase matching
-#   - Strong phrase prioritization
+#   - Primary issue prioritization
+#   - Context-aware scoring
 #   - Explainable predictions
 #   - Confidence scoring
 #   - Confidence threshold
 #   - Deterministic and lightweight
+#
+# Design:
+#   Specific civic-service indicators are treated as PRIMARY
+#   evidence, while contextual/consequence words such as
+#   "accident", "danger", and "water" receive lower influence
+#   when they describe the consequences of another issue.
 #
 # This service is intentionally isolated so that a trained
 # NLP/ML model can replace the internal logic later without
@@ -41,38 +48,37 @@ CIVIC_CATEGORIES = [
 # CLASSIFICATION CONFIGURATION
 # ============================================================
 
-# Minimum confidence required for a confident prediction.
 CONFIDENCE_THRESHOLD = 0.50
 
 
 # ============================================================
-# WEIGHTED CIVIC KNOWLEDGE BASE
+# PRIMARY CIVIC INDICATORS
 # ============================================================
 #
-# Higher weight = stronger evidence for the category.
+# These phrases describe the actual civic service/problem.
 #
-# Multi-word phrases receive higher weights because they carry
-# more semantic information than generic individual words.
+# Strong primary indicators receive additional scoring weight.
 # ============================================================
 
-CATEGORY_KEYWORDS: Dict[str, Dict[str, float]] = {
+PRIMARY_KEYWORDS: Dict[str, Dict[str, float]] = {
 
     # --------------------------------------------------------
     # WASTE MANAGEMENT
     # --------------------------------------------------------
 
     "Waste Management": {
-        "garbage collection": 4.0,
-        "waste collection": 4.0,
-        "garbage": 2.5,
-        "waste": 2.0,
-        "trash": 2.0,
-        "rubbish": 2.0,
-        "litter": 2.0,
-        "dustbin": 2.0,
-        "dump": 1.5,
-        "dumping": 1.5,
-        "cleaning": 1.0,
+        "garbage collection": 6.0,
+        "waste collection": 6.0,
+        "garbage": 4.0,
+        "waste": 3.5,
+        "trash": 3.5,
+        "rubbish": 3.5,
+        "litter": 3.5,
+        "dustbin": 3.5,
+        "dumping": 3.0,
+        "dump": 2.5,
+        "garbage bags": 4.0,
+        "uncollected garbage": 6.0,
     },
 
     # --------------------------------------------------------
@@ -80,21 +86,21 @@ CATEGORY_KEYWORDS: Dict[str, Dict[str, float]] = {
     # --------------------------------------------------------
 
     "Street Lighting": {
-        "street lights": 5.0,
-        "street light": 5.0,
-        "streetlights": 5.0,
-        "streetlight": 5.0,
-        "light pole": 4.0,
-        "light poles": 4.0,
-        "street lamp": 4.0,
-        "street lamps": 4.0,
-        "dark street": 4.0,
-        "dark road": 3.5,
-        "lights are broken": 4.0,
-        "lights are not working": 4.0,
-        "lights not working": 4.0,
-        "lamp": 2.0,
-        "lights": 1.5,
+        "street lights": 7.0,
+        "street light": 7.0,
+        "streetlights": 7.0,
+        "streetlight": 7.0,
+        "light pole": 6.0,
+        "light poles": 6.0,
+        "street lamp": 6.0,
+        "street lamps": 6.0,
+        "dark street": 6.0,
+        "dark road": 5.0,
+        "lights are broken": 6.0,
+        "lights are not working": 6.0,
+        "lights not working": 6.0,
+        "broken lights": 6.0,
+        "broken street lights": 7.0,
     },
 
     # --------------------------------------------------------
@@ -102,19 +108,23 @@ CATEGORY_KEYWORDS: Dict[str, Dict[str, float]] = {
     # --------------------------------------------------------
 
     "Roads & Infrastructure": {
-        "road damage": 5.0,
-        "broken road": 5.0,
-        "damaged road": 5.0,
-        "road construction": 4.0,
-        "pothole": 4.5,
-        "potholes": 4.5,
-        "broken pavement": 4.0,
-        "damaged pavement": 4.0,
-        "footpath": 3.0,
-        "sidewalk": 3.0,
-        "bridge": 3.0,
-        "road": 1.0,
-        "street": 0.75,
+        "road damage": 7.0,
+        "broken road": 7.0,
+        "damaged road": 7.0,
+        "road construction": 6.0,
+        "pothole": 7.0,
+        "potholes": 7.0,
+        "large pothole": 8.0,
+        "deep pothole": 8.0,
+        "broken pavement": 6.0,
+        "damaged pavement": 6.0,
+        "footpath": 5.0,
+        "sidewalk": 5.0,
+        "broken sidewalk": 6.0,
+        "damaged sidewalk": 6.0,
+        "bridge": 5.0,
+        "road": 2.0,
+        "street": 1.0,
     },
 
     # --------------------------------------------------------
@@ -122,17 +132,18 @@ CATEGORY_KEYWORDS: Dict[str, Dict[str, float]] = {
     # --------------------------------------------------------
 
     "Water & Sanitation": {
-        "water supply": 5.0,
-        "water shortage": 5.0,
-        "no water": 5.0,
-        "drinking water": 4.0,
-        "water pipeline": 4.0,
-        "water pipe": 3.5,
-        "tap water": 3.5,
-        "water leakage": 3.5,
-        "water leak": 3.5,
-        "water": 1.5,
-        "pipeline": 2.0,
+        "water supply": 7.0,
+        "water shortage": 7.0,
+        "no water": 7.0,
+        "drinking water": 6.0,
+        "water pipeline": 6.0,
+        "water pipe": 5.0,
+        "tap water": 5.0,
+        "water leakage": 6.0,
+        "water leak": 6.0,
+        "water connection": 5.0,
+        "water pressure": 5.0,
+        "water supply problem": 7.0,
     },
 
     # --------------------------------------------------------
@@ -140,19 +151,21 @@ CATEGORY_KEYWORDS: Dict[str, Dict[str, float]] = {
     # --------------------------------------------------------
 
     "Drainage & Sewerage": {
-        "sewage overflow": 5.0,
-        "sewer overflow": 5.0,
-        "drainage problem": 5.0,
-        "drainage issue": 5.0,
-        "blocked drain": 5.0,
-        "blocked sewer": 5.0,
-        "sewage": 3.5,
-        "sewerage": 3.5,
-        "sewer": 3.0,
-        "drainage": 3.0,
-        "drain": 2.5,
-        "overflow": 2.5,
-        "wastewater": 3.0,
+        "sewage overflow": 7.0,
+        "sewer overflow": 7.0,
+        "drainage problem": 7.0,
+        "drainage issue": 7.0,
+        "blocked drain": 7.0,
+        "blocked sewer": 7.0,
+        "sewage": 5.0,
+        "sewerage": 5.0,
+        "sewer": 4.5,
+        "drainage": 4.5,
+        "drain": 4.0,
+        "overflow": 3.5,
+        "wastewater": 5.0,
+        "blocked drainage": 7.0,
+        "drain blockage": 7.0,
     },
 
     # --------------------------------------------------------
@@ -160,19 +173,19 @@ CATEGORY_KEYWORDS: Dict[str, Dict[str, float]] = {
     # --------------------------------------------------------
 
     "Public Safety": {
-        "public safety": 5.0,
-        "safety issue": 4.5,
-        "unsafe area": 4.5,
-        "crime": 4.0,
-        "criminal activity": 4.5,
-        "security issue": 4.0,
-        "accident": 3.5,
-        "dangerous area": 4.0,
-        "emergency": 4.0,
-        "harassment": 4.0,
-        "unsafe": 2.5,
-        "danger": 2.5,
-        "security": 2.0,
+        "public safety": 7.0,
+        "safety issue": 6.0,
+        "unsafe area": 6.0,
+        "crime": 6.0,
+        "criminal activity": 7.0,
+        "security issue": 6.0,
+        "dangerous area": 6.0,
+        "emergency": 6.0,
+        "harassment": 6.0,
+        "security threat": 7.0,
+        "theft": 6.0,
+        "robbery": 7.0,
+        "assault": 7.0,
     },
 
     # --------------------------------------------------------
@@ -180,18 +193,90 @@ CATEGORY_KEYWORDS: Dict[str, Dict[str, float]] = {
     # --------------------------------------------------------
 
     "Parks & Environment": {
-        "public park": 5.0,
-        "park maintenance": 5.0,
-        "green space": 4.5,
-        "environmental pollution": 5.0,
-        "air pollution": 5.0,
-        "water pollution": 4.5,
-        "pollution": 3.5,
-        "playground": 3.5,
-        "tree": 2.5,
-        "trees": 2.5,
-        "park": 2.5,
-        "environment": 2.0,
+        "public park": 7.0,
+        "park maintenance": 7.0,
+        "green space": 6.0,
+        "environmental pollution": 7.0,
+        "air pollution": 7.0,
+        "water pollution": 6.0,
+        "pollution": 5.0,
+        "playground": 5.0,
+        "tree cutting": 6.0,
+        "fallen tree": 6.0,
+        "park": 4.0,
+        "environment": 3.0,
+    },
+}
+
+
+# ============================================================
+# CONTEXTUAL INDICATORS
+# ============================================================
+#
+# These words often describe consequences or surrounding
+# circumstances rather than the actual civic service involved.
+#
+# They therefore receive lower weights.
+# ============================================================
+
+CONTEXTUAL_KEYWORDS: Dict[str, Dict[str, float]] = {
+
+    "Waste Management": {
+        "dirty": 1.0,
+        "smell": 1.0,
+        "bad smell": 1.5,
+        "unclean": 1.0,
+    },
+
+    "Street Lighting": {
+        "dark": 1.0,
+        "night": 0.5,
+        "visibility": 1.0,
+        "poor visibility": 1.5,
+    },
+
+    "Roads & Infrastructure": {
+        "accident": 1.5,
+        "accidents": 1.5,
+        "traffic": 1.0,
+        "vehicle": 0.5,
+        "vehicles": 0.5,
+        "motorcycle": 0.5,
+        "motorcycles": 0.5,
+        "car": 0.5,
+        "cars": 0.5,
+        "rain": 0.5,
+        "rainy": 0.5,
+    },
+
+    "Water & Sanitation": {
+        "water": 1.5,
+        "thirst": 1.0,
+        "drinking": 0.5,
+    },
+
+    "Drainage & Sewerage": {
+        "flooding": 2.0,
+        "flood": 1.5,
+        "rain": 0.5,
+        "rainwater": 1.0,
+    },
+
+    "Public Safety": {
+        "unsafe": 2.0,
+        "danger": 2.0,
+        "dangerous": 2.0,
+        "accident": 1.5,
+        "accidents": 1.5,
+        "risk": 1.5,
+        "fear": 1.5,
+    },
+
+    "Parks & Environment": {
+        "dirty": 1.0,
+        "dust": 1.0,
+        "smoke": 1.5,
+        "heat": 0.5,
     },
 }
 
@@ -210,6 +295,50 @@ def normalize_text(text: str) -> str:
         .strip()
         .split()
     )
+
+
+# ============================================================
+# KEYWORD MATCHING
+# ============================================================
+
+def _match_keywords(
+    text: str,
+    keyword_map: Dict[str, Dict[str, float]],
+) -> tuple[
+    Dict[str, float],
+    Dict[str, list[str]],
+]:
+    """
+    Match configured keywords against normalized text.
+
+    Returns:
+        category scores
+        matched keywords
+    """
+
+    scores: Dict[str, float] = {
+        category: 0.0
+        for category in CIVIC_CATEGORIES
+    }
+
+    matches: Dict[str, list[str]] = {
+        category: []
+        for category in CIVIC_CATEGORIES
+    }
+
+    for category, keywords in keyword_map.items():
+
+        for keyword, weight in keywords.items():
+
+            if keyword in text:
+
+                scores[category] += weight
+
+                matches[category].append(
+                    keyword
+                )
+
+    return scores, matches
 
 
 # ============================================================
@@ -245,7 +374,10 @@ def classify_complaint(
             "explanation": (
                 "No complaint text was provided."
             ),
-            "scores": {},
+            "scores": {
+                category: 0.0
+                for category in CIVIC_CATEGORIES
+            },
         }
 
     # --------------------------------------------------------
@@ -257,34 +389,51 @@ def classify_complaint(
     )
 
     # --------------------------------------------------------
-    # Initialize scores
+    # Match PRIMARY indicators
     # --------------------------------------------------------
 
-    category_scores: Dict[str, float] = {
-        category: 0.0
-        for category in CIVIC_CATEGORIES
-    }
-
-    matched_keywords: Dict[str, list[str]] = {
-        category: []
-        for category in CIVIC_CATEGORIES
-    }
+    primary_scores, primary_matches = (
+        _match_keywords(
+            text,
+            PRIMARY_KEYWORDS,
+        )
+    )
 
     # --------------------------------------------------------
-    # Weighted matching
+    # Match CONTEXTUAL indicators
     # --------------------------------------------------------
 
-    for category, keywords in CATEGORY_KEYWORDS.items():
+    contextual_scores, contextual_matches = (
+        _match_keywords(
+            text,
+            CONTEXTUAL_KEYWORDS,
+        )
+    )
 
-        for keyword, weight in keywords.items():
+    # --------------------------------------------------------
+    # Combine scores
+    # --------------------------------------------------------
+    #
+    # Primary indicators are intentionally dominant.
+    #
+    # Contextual indicators provide supporting evidence
+    # without overpowering a clear primary issue.
+    # --------------------------------------------------------
 
-            if keyword in text:
+    category_scores: Dict[str, float] = {}
 
-                category_scores[category] += weight
+    for category in CIVIC_CATEGORIES:
 
-                matched_keywords[
-                    category
-                ].append(keyword)
+        category_scores[category] = (
+            primary_scores.get(
+                category,
+                0.0,
+            )
+            + contextual_scores.get(
+                category,
+                0.0,
+            )
+        )
 
     # --------------------------------------------------------
     # No evidence found
@@ -332,16 +481,23 @@ def classify_complaint(
     )
 
     # --------------------------------------------------------
+    # Determine whether a PRIMARY indicator exists
+    # --------------------------------------------------------
+
+    best_primary_score = primary_scores.get(
+        best_category,
+        0.0,
+    )
+
+    # --------------------------------------------------------
     # Confidence calculation
     # --------------------------------------------------------
     #
-    # We combine:
+    # Primary evidence is trusted more than contextual
+    # evidence.
     #
-    # 1. Score dominance
-    # 2. Difference from second-best category
-    #
-    # This prevents generic words from producing overly
-    # confident predictions.
+    # When a strong primary indicator exists, confidence
+    # receives a stability bonus.
     # --------------------------------------------------------
 
     score_share = (
@@ -358,15 +514,41 @@ def classify_complaint(
         )
 
     else:
+
         separation = 0.0
 
     confidence = (
-        (score_share * 0.70)
-        + (separation * 0.30)
+        (score_share * 0.55)
+        + (separation * 0.25)
+        + (
+            min(
+                best_primary_score / 10.0,
+                1.0,
+            )
+            * 0.20
+        )
     )
 
+    # --------------------------------------------------------
+    # Primary issue protection
+    # --------------------------------------------------------
+    #
+    # A strong service-specific indicator should not be
+    # overturned by weaker contextual evidence.
+    # --------------------------------------------------------
+
+    if best_primary_score >= 6.0:
+
+        confidence = max(
+            confidence,
+            0.60,
+        )
+
     confidence = min(
-        max(confidence, 0.0),
+        max(
+            confidence,
+            0.0,
+        ),
         1.0,
     )
 
@@ -376,7 +558,7 @@ def classify_complaint(
     )
 
     # --------------------------------------------------------
-    # Confidence decision
+    # Final category decision
     # --------------------------------------------------------
 
     if confidence < CONFIDENCE_THRESHOLD:
@@ -393,15 +575,22 @@ def classify_complaint(
 
         final_category = best_category
 
-        matched = matched_keywords[
-            best_category
-        ]
+        all_matches = (
+            primary_matches.get(
+                best_category,
+                [],
+            )
+            + contextual_matches.get(
+                best_category,
+                [],
+            )
+        )
 
         explanation = (
             f"The complaint was classified as "
             f"{best_category} based on the detected "
             f"civic indicators: "
-            f"{', '.join(matched)}."
+            f"{', '.join(all_matches)}."
         )
 
     # --------------------------------------------------------
@@ -411,9 +600,16 @@ def classify_complaint(
     return {
         "category": final_category,
         "confidence": confidence,
-        "matched_keywords": matched_keywords[
-            best_category
-        ],
+        "matched_keywords": (
+            primary_matches.get(
+                best_category,
+                [],
+            )
+            + contextual_matches.get(
+                best_category,
+                [],
+            )
+        ),
         "explanation": explanation,
         "scores": {
             category: round(
