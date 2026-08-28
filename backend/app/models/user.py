@@ -30,6 +30,11 @@ class User(Base):
         nullable=False,
     )
 
+    profile_picture = Column(
+        String(500),
+        nullable=True,
+    )
+
     is_active = Column(
         Boolean,
         default=True,

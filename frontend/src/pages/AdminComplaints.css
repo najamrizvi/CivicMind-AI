@@ -1,0 +1,1734 @@
+/* =========================================================
+   CIVICMIND AI — ADMIN COMPLAINT OPERATIONS
+   Premium Crystal / Sunlight / Stitch-inspired Admin UI
+   Designed for the current AdminComplaints.jsx
+   ========================================================= */
+
+.admin-complaints-page {
+  --admin-bg: #f5f1e8;
+  --admin-surface: rgba(255, 255, 255, 0.68);
+  --admin-surface-strong: rgba(255, 255, 255, 0.82);
+  --admin-text: #2c2923;
+  --admin-muted: #7c756a;
+  --admin-soft: #9b9386;
+  --admin-gold: #b58b4a;
+  --admin-gold-dark: #927039;
+  --admin-border: rgba(91, 72, 42, 0.13);
+  --admin-shadow:
+    0 22px 55px rgba(67, 51, 29, 0.075),
+    inset 0 1px 0 rgba(255, 255, 255, 0.82);
+
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  overflow-x: hidden;
+  color: var(--admin-text);
+  background:
+    radial-gradient(
+      circle at 92% 4%,
+      rgba(231, 190, 112, 0.25),
+      transparent 27%
+    ),
+    radial-gradient(
+      circle at 3% 88%,
+      rgba(121, 150, 134, 0.13),
+      transparent 28%
+    ),
+    linear-gradient(
+      135deg,
+      #fbf8f1 0%,
+      #f3eee4 52%,
+      #e8e1d4 100%
+    );
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+
+/* =========================================================
+   AMBIENT BACKGROUND
+   ========================================================= */
+
+.admin-complaints-orb {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 50%;
+  filter: blur(2px);
+}
+
+.admin-complaints-orb-one {
+  width: 420px;
+  height: 420px;
+  top: -180px;
+  right: -120px;
+  background:
+    radial-gradient(
+      circle,
+      rgba(236, 196, 119, 0.2),
+      transparent 68%
+    );
+}
+
+.admin-complaints-orb-two {
+  width: 370px;
+  height: 370px;
+  bottom: -180px;
+  left: -120px;
+  background:
+    radial-gradient(
+      circle,
+      rgba(113, 145, 126, 0.12),
+      transparent 68%
+    );
+}
+
+.admin-complaints-grid-background {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.3;
+  background-image:
+    linear-gradient(
+      rgba(107, 89, 61, 0.025) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(107, 89, 61, 0.025) 1px,
+      transparent 1px
+    );
+  background-size: 42px 42px;
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.admin-sidebar {
+  position: sticky;
+  z-index: 10;
+  top: 0;
+  width: 258px;
+  min-width: 258px;
+  height: 100vh;
+  height: 100svh;
+  padding: 22px 16px;
+  box-sizing: border-box;
+}
+
+.admin-sidebar-inner {
+  height: 100%;
+  padding: 20px 14px 15px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(91, 72, 42, 0.12);
+  border-radius: 27px;
+  background:
+    linear-gradient(
+      150deg,
+      rgba(255, 255, 255, 0.76),
+      rgba(255, 255, 255, 0.5)
+    );
+  box-shadow:
+    0 22px 55px rgba(72, 55, 31, 0.075),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.admin-brand {
+  padding: 4px 5px 23px;
+}
+
+.admin-brand-link {
+  width: 100%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.admin-brand-icon {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(181, 139, 74, 0.2);
+  border-radius: 12px;
+  color: #a67d42;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.84),
+      rgba(235, 222, 195, 0.62)
+    );
+  box-shadow:
+    0 9px 20px rgba(93, 69, 32, 0.08),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.9);
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+  font-size: 18px;
+}
+
+.admin-brand-name {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.admin-brand-name strong {
+  color: #39342b;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.admin-brand-name span {
+  color: #a27b43;
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 1.5px;
+}
+
+.admin-sidebar-label {
+  padding: 0 8px 10px;
+  color: #998c7b;
+  font-size: 8px;
+  font-weight: 850;
+  letter-spacing: 1.9px;
+}
+
+.admin-navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-nav-link {
+  position: relative;
+  width: 100%;
+  min-height: 43px;
+  padding: 0 11px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  color: #777064;
+  background: transparent;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 650;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-nav-link:hover {
+  color: #51493d;
+  background: rgba(255, 255, 255, 0.46);
+  transform: translateX(2px);
+}
+
+.admin-nav-link.active {
+  color: #70552c;
+  border-color: rgba(181, 139, 74, 0.14);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(181, 139, 74, 0.12),
+      rgba(255, 255, 255, 0.52)
+    );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.admin-nav-icon {
+  width: 20px;
+  color: #9b8c77;
+  font-size: 15px;
+  text-align: center;
+}
+
+.admin-nav-link.active .admin-nav-icon {
+  color: #a67c3d;
+}
+
+.admin-nav-active-mark {
+  margin-left: auto;
+  color: #a47a3a;
+  font-size: 13px;
+}
+
+.admin-sidebar-divider {
+  height: 1px;
+  margin: 20px 6px 14px;
+  background: rgba(91, 72, 42, 0.1);
+}
+
+.admin-profile-card {
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid rgba(91, 72, 42, 0.09);
+  border-radius: 15px;
+  color: inherit;
+  background:
+    rgba(255, 255, 255, 0.38);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-profile-card:hover {
+  background: rgba(255, 255, 255, 0.62);
+  transform: translateY(-1px);
+}
+
+.admin-profile-avatar,
+.admin-account-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #765b35;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(232, 213, 175, 0.78),
+      rgba(255, 255, 255, 0.7)
+    );
+  border: 1px solid rgba(181, 139, 74, 0.18);
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+  font-weight: 600;
+}
+
+.admin-profile-avatar {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  font-size: 13px;
+}
+
+.admin-profile-info {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.admin-profile-info strong {
+  overflow: hidden;
+  color: #514a40;
+  font-size: 10px;
+  font-weight: 750;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-profile-info span {
+  color: #958b7d;
+  font-size: 8px;
+}
+
+.admin-profile-arrow {
+  color: #9d896a;
+  font-size: 12px;
+}
+
+.admin-sidebar-bottom {
+  margin-top: auto;
+}
+
+.admin-sidebar-system {
+  margin: 14px 3px;
+  padding: 11px;
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  border: 1px solid rgba(91, 72, 42, 0.08);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.admin-system-icon {
+  width: 26px;
+  height: 26px;
+  flex: 0 0 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  color: #a17a3f;
+  background: rgba(181, 139, 74, 0.08);
+  font-size: 12px;
+}
+
+.admin-sidebar-system strong {
+  display: block;
+  color: #5c554b;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.admin-sidebar-system p {
+  margin: 3px 0 0;
+  color: #968d80;
+  font-size: 7px;
+  line-height: 1.45;
+}
+
+.admin-logout {
+  width: 100%;
+  min-height: 38px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  color: #8b7660;
+  background: transparent;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.admin-logout:hover {
+  color: #815748;
+  background: rgba(177, 102, 83, 0.06);
+}
+
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+.admin-main {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  flex: 1;
+  padding: 42px 48px 55px;
+}
+
+.admin-complaints-main {
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.admin-header {
+  margin-bottom: 31px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 35px;
+}
+
+.admin-header-copy {
+  min-width: 0;
+}
+
+.admin-header-label {
+  display: block;
+  color: #92754b;
+  font-size: 8px;
+  font-weight: 850;
+  letter-spacing: 2.4px;
+}
+
+.admin-header-copy h1 {
+  margin: 9px 0 11px;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+  font-size: clamp(44px, 5vw, 66px);
+  line-height: 0.98;
+  letter-spacing: -3px;
+  font-weight: 500;
+}
+
+.admin-header-copy h1 span {
+  color: #887b68;
+  font-style: italic;
+}
+
+.admin-header-copy p {
+  max-width: 630px;
+  margin: 0;
+  color: var(--admin-muted);
+  font-size: 12px;
+  line-height: 1.75;
+}
+
+.admin-header-account {
+  min-width: 220px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(91, 72, 42, 0.1);
+  border-radius: 17px;
+  color: inherit;
+  background:
+    rgba(255, 255, 255, 0.45);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-header-account:hover {
+  background: rgba(255, 255, 255, 0.67);
+  box-shadow:
+    0 10px 25px rgba(72, 55, 31, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  transform: translateY(-1px);
+}
+
+.admin-account-avatar {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  font-size: 14px;
+}
+
+.admin-account-details {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.admin-account-details strong {
+  overflow: hidden;
+  color: #4e473e;
+  font-size: 10px;
+  font-weight: 750;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-account-details span {
+  color: #93897a;
+  font-size: 8px;
+}
+
+.admin-account-arrow {
+  color: #9d896a;
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.admin-error {
+  margin-bottom: 20px;
+  padding: 13px 15px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  border: 1px solid rgba(164, 82, 67, 0.17);
+  border-radius: 14px;
+  color: #875148;
+  background:
+    rgba(183, 107, 94, 0.075);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.admin-error-icon {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: white;
+  background: #a96456;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.admin-error > div {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.admin-error strong {
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.admin-error span:not(.admin-error-icon) {
+  color: #9b675e;
+  font-size: 9px;
+}
+
+.admin-error button {
+  padding: 7px 12px;
+  border: 1px solid rgba(164, 82, 67, 0.17);
+  border-radius: 8px;
+  color: #895247;
+  background: rgba(255, 255, 255, 0.38);
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   SECTION HEADINGS
+   ========================================================= */
+
+.admin-section-heading,
+.admin-controls-heading,
+.admin-registry-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.admin-section-heading {
+  margin-bottom: 17px;
+}
+
+.admin-section-heading > div > span,
+.admin-controls-heading > div > span,
+.admin-registry-header > div > span {
+  color: #92754b;
+  font-size: 8px;
+  font-weight: 850;
+  letter-spacing: 2px;
+}
+
+.admin-section-heading h2,
+.admin-controls-heading h2,
+.admin-registry-header h2 {
+  margin: 6px 0 0;
+  color: #3d382f;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+  font-size: 27px;
+  line-height: 1.1;
+  font-weight: 500;
+  letter-spacing: -0.7px;
+}
+
+
+/* =========================================================
+   REFRESH BUTTON
+   ========================================================= */
+
+.admin-refresh-button {
+  min-height: 38px;
+  padding: 0 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(181, 139, 74, 0.19);
+  border-radius: 10px;
+  color: #8d6b39;
+  background: rgba(181, 139, 74, 0.065);
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 750;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-refresh-button:hover:not(:disabled) {
+  background: rgba(181, 139, 74, 0.12);
+  transform: translateY(-1px);
+}
+
+.admin-refresh-button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.admin-refresh-button span {
+  font-size: 15px;
+}
+
+
+/* =========================================================
+   SUMMARY CARDS
+   ========================================================= */
+
+.admin-complaints-summary {
+  margin-bottom: 29px;
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admin-complaint-summary-card {
+  position: relative;
+  min-height: 137px;
+  padding: 20px;
+  border: 1px solid var(--admin-border);
+  border-radius: 19px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.73),
+      rgba(255, 255, 255, 0.47)
+    );
+  box-shadow:
+    0 15px 36px rgba(72, 55, 31, 0.055),
+    inset 0 1px 0 rgba(255, 255, 255, 0.78);
+  overflow: hidden;
+  backdrop-filter: blur(17px);
+  -webkit-backdrop-filter: blur(17px);
+}
+
+.admin-complaint-summary-card::after {
+  content: "";
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  right: -44px;
+  bottom: -52px;
+  border-radius: 50%;
+  background: rgba(181, 139, 74, 0.06);
+}
+
+.admin-complaint-summary-card > span {
+  display: block;
+  color: #918778;
+  font-size: 7px;
+  font-weight: 850;
+  letter-spacing: 1.6px;
+}
+
+.admin-complaint-summary-card strong {
+  display: block;
+  margin-top: 12px;
+  color: #39342c;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+  font-size: 38px;
+  line-height: 1;
+  font-weight: 500;
+}
+
+.admin-complaint-summary-card p {
+  margin: 8px 0 0;
+  color: #938a7d;
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+.admin-complaint-summary-card.featured {
+  border-color: rgba(181, 139, 74, 0.18);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.8),
+      rgba(238, 222, 191, 0.36)
+    );
+}
+
+.admin-complaint-summary-card.alert {
+  border-color: rgba(171, 91, 76, 0.14);
+}
+
+.admin-complaint-summary-card.alert strong {
+  color: #87564e;
+}
+
+
+/* =========================================================
+   CONTROLS
+   ========================================================= */
+
+.admin-complaints-controls {
+  margin-bottom: 19px;
+  padding: 24px;
+  border: 1px solid var(--admin-border);
+  border-radius: 22px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.73),
+      rgba(255, 255, 255, 0.48)
+    );
+  box-shadow: var(--admin-shadow);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.admin-controls-heading {
+  margin-bottom: 19px;
+}
+
+.admin-result-count {
+  color: #81786b;
+  font-size: 9px;
+  font-weight: 650;
+}
+
+.admin-filter-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(240px, 2fr)
+    repeat(4, minmax(130px, 1fr))
+    auto;
+  gap: 9px;
+}
+
+.admin-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-filter-field > span {
+  color: #8e8476;
+  font-size: 7px;
+  font-weight: 850;
+  letter-spacing: 1.2px;
+}
+
+.admin-search-input-wrap {
+  position: relative;
+}
+
+.admin-search-input-wrap > span {
+  position: absolute;
+  z-index: 1;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9b9081;
+  font-size: 17px;
+  pointer-events: none;
+}
+
+.admin-search-input-wrap input,
+.admin-filter-field select {
+  width: 100%;
+  height: 43px;
+  box-sizing: border-box;
+  padding: 0 12px;
+  border: 1px solid rgba(91, 72, 42, 0.13);
+  border-radius: 10px;
+  outline: none;
+  color: #554e44;
+  background: rgba(255, 255, 255, 0.52);
+  font-family: inherit;
+  font-size: 9px;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-search-input-wrap input {
+  padding-left: 37px;
+}
+
+.admin-search-input-wrap input::placeholder {
+  color: #a39a8e;
+}
+
+.admin-search-input-wrap input:focus,
+.admin-filter-field select:focus {
+  border-color: rgba(181, 139, 74, 0.42);
+  background: rgba(255, 255, 255, 0.73);
+  box-shadow:
+    0 0 0 3px rgba(181, 139, 74, 0.065);
+}
+
+.admin-filter-field select {
+  cursor: pointer;
+}
+
+.admin-clear-filters {
+  align-self: flex-end;
+  height: 43px;
+  padding: 0 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid rgba(181, 139, 74, 0.2);
+  border-radius: 10px;
+  color: #8f6d3a;
+  background: rgba(181, 139, 74, 0.07);
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 750;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-clear-filters:hover {
+  background: rgba(181, 139, 74, 0.13);
+  transform: translateY(-1px);
+}
+
+.admin-clear-filters span {
+  font-size: 15px;
+}
+
+
+/* =========================================================
+   REGISTRY
+   ========================================================= */
+
+.admin-complaints-registry {
+  border: 1px solid var(--admin-border);
+  border-radius: 22px;
+  background:
+    rgba(255, 255, 255, 0.57);
+  box-shadow: var(--admin-shadow);
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.admin-registry-header {
+  padding: 22px 24px;
+  border-bottom: 1px solid rgba(91, 72, 42, 0.08);
+  background:
+    rgba(255, 255, 255, 0.27);
+}
+
+.admin-registry-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #71816f;
+  font-size: 8px;
+  font-weight: 750;
+}
+
+.admin-registry-live > span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #6e9478;
+  box-shadow:
+    0 0 0 4px rgba(110, 148, 120, 0.08);
+}
+
+
+/* =========================================================
+   COMPLAINT LIST
+   ========================================================= */
+
+.admin-complaints-list {
+  width: 100%;
+}
+
+.admin-complaint-row {
+  display: grid;
+  grid-template-columns:
+    110px
+    minmax(300px, 1fr)
+    100px
+    155px
+    70px;
+  gap: 18px;
+  align-items: center;
+  padding: 18px 24px;
+  border-bottom: 1px solid rgba(91, 72, 42, 0.075);
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-complaint-row:hover {
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.admin-complaint-row:last-child {
+  border-bottom: 0;
+}
+
+
+/* =========================================================
+   IDENTITY
+   ========================================================= */
+
+.admin-complaint-identity {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-complaint-number {
+  color: #4e473d;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.admin-complaint-identity > span {
+  overflow: hidden;
+  color: #a07e4d;
+  font-size: 8px;
+  font-weight: 750;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-complaint-identity small {
+  color: #958c7e;
+  font-size: 8px;
+}
+
+
+/* =========================================================
+   COMPLAINT MAIN
+   ========================================================= */
+
+.admin-complaint-main {
+  min-width: 0;
+}
+
+.admin-complaint-title {
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  color: #3e382f;
+  background: transparent;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.admin-complaint-title:hover {
+  color: #9a7239;
+}
+
+.admin-complaint-main p {
+  max-width: 650px;
+  margin: 5px 0 8px;
+  color: #7d756a;
+  font-size: 9px;
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.admin-complaint-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.admin-complaint-meta span {
+  padding: 4px 7px;
+  border: 1px solid rgba(91, 72, 42, 0.08);
+  border-radius: 999px;
+  color: #81786d;
+  background: rgba(255, 255, 255, 0.33);
+  font-size: 7px;
+  font-weight: 650;
+}
+
+
+/* =========================================================
+   PRIORITY
+   ========================================================= */
+
+.admin-complaint-priority,
+.admin-complaint-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.admin-complaint-priority > span,
+.admin-complaint-status > span {
+  color: #9a9082;
+  font-size: 6px;
+  font-weight: 850;
+  letter-spacing: 1px;
+}
+
+.admin-complaint-priority strong {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 9px;
+  border-radius: 999px;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.admin-complaint-priority strong i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.priority-high {
+  color: #955b51;
+  background: rgba(171, 91, 76, 0.1);
+}
+
+.priority-medium {
+  color: #9a763d;
+  background: rgba(181, 139, 74, 0.11);
+}
+
+.priority-low {
+  color: #5e7c68;
+  background: rgba(91, 126, 103, 0.1);
+}
+
+.priority-unknown {
+  color: #79736b;
+  background: rgba(121, 115, 107, 0.09);
+}
+
+
+/* =========================================================
+   STATUS SELECT
+   ========================================================= */
+
+.admin-complaint-status select {
+  width: 100%;
+  min-width: 135px;
+  height: 33px;
+  padding: 0 8px;
+  border: 1px solid rgba(91, 72, 42, 0.12);
+  border-radius: 8px;
+  outline: none;
+  color: #625a4f;
+  background: rgba(255, 255, 255, 0.56);
+  font-family: inherit;
+  font-size: 8px;
+  cursor: pointer;
+}
+
+.admin-complaint-status select:focus {
+  border-color: rgba(181, 139, 74, 0.38);
+  box-shadow:
+    0 0 0 3px rgba(181, 139, 74, 0.06);
+}
+
+.admin-complaint-status select:disabled {
+  opacity: 0.58;
+  cursor: wait;
+}
+
+.admin-complaint-status small {
+  color: #9b8668;
+  font-size: 7px;
+}
+
+
+/* =========================================================
+   ACTION
+   ========================================================= */
+
+.admin-complaint-action {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.admin-complaint-action button {
+  min-height: 32px;
+  padding: 0 9px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid rgba(181, 139, 74, 0.19);
+  border-radius: 8px;
+  color: #8c6936;
+  background: rgba(181, 139, 74, 0.065);
+  font-family: inherit;
+  font-size: 8px;
+  font-weight: 750;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-complaint-action button:hover {
+  background: rgba(181, 139, 74, 0.13);
+  box-shadow:
+    0 6px 15px rgba(142, 101, 43, 0.08);
+  transform: translateY(-1px);
+}
+
+.admin-complaint-action button span {
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.admin-complaints-loading {
+  min-height: 260px;
+  padding: 35px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.admin-loading-spinner {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 4px;
+  border: 2px solid rgba(181, 139, 74, 0.17);
+  border-top-color: #b58b4a;
+  border-radius: 50%;
+  animation:
+    adminComplaintsSpin 0.8s linear infinite;
+}
+
+.admin-complaints-loading strong {
+  color: #5c554a;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.admin-complaints-loading span {
+  color: #9a9185;
+  font-size: 9px;
+}
+
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+.admin-complaints-empty {
+  min-height: 260px;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.admin-empty-icon {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(181, 139, 74, 0.13);
+  border-radius: 17px;
+  color: #aa8a5c;
+  background: rgba(181, 139, 74, 0.06);
+  font-size: 22px;
+}
+
+.admin-complaints-empty strong {
+  color: #575046;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.admin-complaints-empty p {
+  max-width: 400px;
+  margin: 6px 0 13px;
+  color: #958c80;
+  font-size: 9px;
+  line-height: 1.6;
+}
+
+.admin-complaints-empty button {
+  padding: 7px 12px;
+  border: 1px solid rgba(181, 139, 74, 0.2);
+  border-radius: 8px;
+  color: #8b6938;
+  background: rgba(181, 139, 74, 0.07);
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.admin-footer {
+  margin-top: 27px;
+  padding: 15px 4px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-top: 1px solid rgba(91, 72, 42, 0.08);
+}
+
+.admin-footer-brand {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.admin-footer-brand strong {
+  color: #62594e;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.admin-footer-brand span {
+  color: #a0998e;
+  font-size: 8px;
+}
+
+.admin-footer-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #7b8879;
+  font-size: 8px;
+  font-weight: 650;
+}
+
+.admin-footer-status > span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #719079;
+}
+
+
+/* =========================================================
+   ANIMATION
+   ========================================================= */
+
+@keyframes adminComplaintsSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   LARGE TABLET
+   ========================================================= */
+
+@media (max-width: 1250px) {
+  .admin-main {
+    padding: 35px 30px 45px;
+  }
+
+  .admin-sidebar {
+    width: 225px;
+    min-width: 225px;
+  }
+
+  .admin-complaint-row {
+    grid-template-columns:
+      95px
+      minmax(250px, 1fr)
+      90px
+      140px
+      62px;
+    gap: 13px;
+    padding-left: 19px;
+    padding-right: 19px;
+  }
+
+  .admin-filter-grid {
+    grid-template-columns:
+      minmax(220px, 2fr)
+      repeat(3, minmax(120px, 1fr));
+  }
+
+  .admin-clear-filters {
+    grid-column: span 1;
+  }
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1050px) {
+  .admin-sidebar {
+    width: 80px;
+    min-width: 80px;
+    padding: 15px 10px;
+  }
+
+  .admin-sidebar-inner {
+    padding: 17px 9px;
+    border-radius: 22px;
+  }
+
+  .admin-brand {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 20px;
+  }
+
+  .admin-brand-link {
+    justify-content: center;
+  }
+
+  .admin-brand-name,
+  .admin-sidebar-label,
+  .admin-nav-link > span:not(.admin-nav-icon),
+  .admin-nav-active-mark,
+  .admin-profile-info,
+  .admin-profile-arrow,
+  .admin-sidebar-system,
+  .admin-logout > span:last-child {
+    display: none;
+  }
+
+  .admin-nav-link {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .admin-nav-icon {
+    width: auto;
+  }
+
+  .admin-profile-card {
+    justify-content: center;
+    padding: 8px;
+  }
+
+  .admin-logout {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .admin-complaints-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .admin-complaint-row {
+    grid-template-columns:
+      90px
+      minmax(230px, 1fr)
+      90px
+      135px;
+  }
+
+  .admin-complaint-action {
+    grid-column: 4;
+    justify-content: flex-start;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 760px) {
+  .admin-complaints-page {
+    display: block;
+  }
+
+  .admin-sidebar {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    padding: 10px;
+  }
+
+  .admin-sidebar-inner {
+    height: auto;
+    padding: 10px;
+    border-radius: 19px;
+  }
+
+  .admin-brand {
+    padding: 3px 4px 10px;
+  }
+
+  .admin-brand-link {
+    justify-content: flex-start;
+  }
+
+  .admin-brand-name {
+    display: flex;
+  }
+
+  .admin-navigation {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+  }
+
+  .admin-sidebar-label,
+  .admin-sidebar-divider,
+  .admin-profile-card,
+  .admin-sidebar-bottom {
+    display: none;
+  }
+
+  .admin-nav-link {
+    min-height: 38px;
+  }
+
+  .admin-nav-link > span:not(.admin-nav-icon) {
+    display: none;
+  }
+
+  .admin-nav-icon {
+    display: inline-block;
+  }
+
+  .admin-main {
+    padding: 25px 15px 38px;
+  }
+
+  .admin-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .admin-header-copy h1 {
+    font-size: 46px;
+    letter-spacing: -2.2px;
+  }
+
+  .admin-header-copy p {
+    font-size: 11px;
+  }
+
+  .admin-header-account {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .admin-complaints-summary {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .admin-complaint-summary-card {
+    min-height: 120px;
+    padding: 16px;
+  }
+
+  .admin-complaint-summary-card strong {
+    font-size: 31px;
+  }
+
+  .admin-complaints-controls {
+    padding: 18px;
+  }
+
+  .admin-controls-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .admin-filter-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .admin-filter-field:first-child {
+    grid-column: span 2;
+  }
+
+  .admin-clear-filters {
+    grid-column: span 2;
+  }
+
+  .admin-registry-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-complaint-row {
+    grid-template-columns: 1fr;
+    gap: 13px;
+    padding: 19px;
+  }
+
+  .admin-complaint-action {
+    grid-column: auto;
+    justify-content: flex-start;
+  }
+
+  .admin-complaint-action button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .admin-complaint-status select {
+    width: 100%;
+  }
+
+  .admin-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+  .admin-header-copy h1 {
+    font-size: 39px;
+  }
+
+  .admin-complaints-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-complaint-summary-card {
+    min-height: 110px;
+  }
+
+  .admin-filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-filter-field:first-child,
+  .admin-clear-filters {
+    grid-column: span 1;
+  }
+
+  .admin-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-refresh-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .admin-complaints-controls {
+    padding: 15px;
+  }
+
+  .admin-complaint-number {
+    font-size: 16px;
+  }
+
+  .admin-complaint-main p {
+    font-size: 8px;
+  }
+
+  .admin-footer-brand {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
+  }
+}

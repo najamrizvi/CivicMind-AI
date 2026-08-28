@@ -13,8 +13,11 @@
 #   GET /complaints/my
 #       Get all complaints belonging to current citizen
 #
+#   GET /complaints/track/{receipt_number}
+#       Track one complaint using its public receipt number
+#
 #   GET /complaints/{complaint_id}
-#       Get one complaint belonging to current citizen
+#       Get one complaint using its database ID
 #
 # ============================================================
 
@@ -188,11 +191,15 @@ def submit_complaint(
         ) from exc
 
     # --------------------------------------------------------
-    # UNEXPECTED ERRORS
+    # HTTP ERRORS
     # --------------------------------------------------------
 
     except HTTPException:
         raise
+
+    # --------------------------------------------------------
+    # UNEXPECTED ERRORS
+    # --------------------------------------------------------
 
     except Exception as exc:
 
@@ -268,7 +275,108 @@ def get_my_complaints(
 
 
 # ============================================================
-# GET SINGLE COMPLAINT
+# TRACK COMPLAINT BY RECEIPT NUMBER
+# ============================================================
+
+@router.get(
+    "/track/{receipt_number}",
+    response_model=ComplaintResponse,
+)
+def track_complaint(
+    receipt_number: str,
+    current_user: User = Depends(
+        get_current_user
+    ),
+    db: Session = Depends(
+        get_db
+    ),
+):
+    """
+    Track one complaint using its receipt number.
+
+    Example:
+
+        GET /complaints/track/CM-2026-0001
+
+    The complaint must belong to the currently
+    authenticated citizen.
+    """
+
+    try:
+
+        # ----------------------------------------------------
+        # CLEAN RECEIPT NUMBER
+        # ----------------------------------------------------
+
+        cleaned_receipt_number = (
+            receipt_number.strip()
+        )
+
+        if not cleaned_receipt_number:
+
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Complaint ID cannot be empty.",
+            )
+
+        # ----------------------------------------------------
+        # FIND COMPLAINT
+        # ----------------------------------------------------
+
+        complaint = (
+            db.query(Complaint)
+            .filter(
+                Complaint.receipt_number
+                == cleaned_receipt_number,
+                Complaint.user_id
+                == current_user.id,
+            )
+            .first()
+        )
+
+        # ----------------------------------------------------
+        # NOT FOUND
+        # ----------------------------------------------------
+
+        if not complaint:
+
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=(
+                    "Complaint not found. "
+                    "Please check your complaint ID."
+                ),
+            )
+
+        # ----------------------------------------------------
+        # RETURN COMPLAINT
+        # ----------------------------------------------------
+
+        return complaint
+
+    except HTTPException:
+        raise
+
+    except SQLAlchemyError as exc:
+
+        logger.exception(
+            "Database error while tracking complaint "
+            "receipt=%s for user_id=%s",
+            receipt_number,
+            current_user.id,
+        )
+
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=(
+                "Unable to track the complaint "
+                "at this time."
+            ),
+        ) from exc
+
+
+# ============================================================
+# GET SINGLE COMPLAINT BY DATABASE ID
 # ============================================================
 
 @router.get(
@@ -285,13 +393,16 @@ def get_complaint(
     ),
 ):
     """
-    Return one complaint belonging to the
-    currently authenticated citizen.
+    Return one complaint using its database ID.
 
     Citizens can only access their own complaints.
     """
 
     try:
+
+        # ----------------------------------------------------
+        # FIND COMPLAINT
+        # ----------------------------------------------------
 
         complaint = (
             db.query(Complaint)
@@ -304,12 +415,20 @@ def get_complaint(
             .first()
         )
 
+        # ----------------------------------------------------
+        # NOT FOUND
+        # ----------------------------------------------------
+
         if not complaint:
 
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Complaint not found.",
             )
+
+        # ----------------------------------------------------
+        # RETURN COMPLAINT
+        # ----------------------------------------------------
 
         return complaint
 
