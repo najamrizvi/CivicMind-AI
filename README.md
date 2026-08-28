@@ -2,9 +2,12 @@
 
 ### AI-Powered Civic Complaint Intelligence & Management Platform
 
-CivicMind AI is a full-stack AI-powered civic service platform designed to help citizens submit civic complaints and enable intelligent classification, priority prediction, department routing, and complaint tracking.
+CivicMind AI is a full-stack AI-powered civic service platform designed to help citizens submit civic complaints and enable intelligent complaint classification, priority prediction, department routing, and complaint tracking.
 
-The platform combines a modern React frontend with a FastAPI backend, database persistence, authentication, and AI-driven complaint intelligence to create a practical digital solution for improving civic complaint management.
+The platform combines a modern React frontend with a FastAPI backend, database persistence, authentication, and AI-driven complaint intelligence to provide a practical digital solution for improving civic complaint management.
+
+**GitHub Repository:**
+https://github.com/najamrizvi/CivicMind-AI
 
 ---
 
@@ -14,7 +17,7 @@ Traditional civic complaint systems often require citizens to manually identify 
 
 **CivicMind AI simplifies this process.**
 
-A citizen can submit a complaint, and the system uses AI to analyze the complaint and assist with:
+A citizen can submit a complaint, and the system processes the complaint to assist with:
 
 * Complaint classification
 * Priority prediction
@@ -34,12 +37,16 @@ The goal is to make civic complaint submission **simpler for citizens and easier
 
 * User registration and authentication
 * Secure login
+* Citizen dashboard
 * Submit civic complaints
 * Upload supporting files/images
 * View submitted complaints
-* Track complaint status
 * View complaint details
-* Receive complaint information/receipt
+* Track complaint status
+* Receive complaint information and receipt
+* Manage citizen profile
+* Update profile information
+* Upload and remove profile pictures
 
 ### 🤖 AI-Powered Intelligence
 
@@ -54,57 +61,57 @@ This reduces the need for citizens to manually determine where their complaint s
 ### 📊 Complaint Management
 
 * Complaint creation
-* Unique complaint tracking
+* Unique complaint identification
+* Complaint tracking
 * Complaint status management
-* Complaint history/tracking
+* Complaint history
 * Department-based routing
 * Administrative complaint management
+* Complaint receipt generation
 
 ### 🛡️ Authentication & Security
 
 * User registration
 * Login authentication
 * Protected API endpoints
-* Role-based access for administrative functionality
+* Role-based administrative functionality
 * Environment-based configuration for sensitive settings
+* Backend request validation
 
 ---
 
 ## 🏗️ System Architecture
 
 ```text
-                    ┌──────────────────────┐
-                    │      Citizen         │
-                    │   Web Application    │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │   React + Vite       │
-                    │      Frontend        │
-                    └──────────┬───────────┘
-                               │
-                         HTTP / REST API
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │      FastAPI         │
-                    │       Backend        │
-                    └──────────┬───────────┘
-                               │
-             ┌─────────────────┼─────────────────┐
-             │                 │                 │
-             ▼                 ▼                 ▼
-       Authentication      AI Services       Complaint
-          System          & Intelligence      Management
-             │                 │                 │
-             └─────────────────┼─────────────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │       Database       │
-                    │    Persistence       │
-                    └──────────────────────┘
+                         Citizen
+                            │
+                            ▼
+                 ┌─────────────────────┐
+                 │   React + Vite      │
+                 │     Frontend        │
+                 └──────────┬──────────┘
+                            │
+                       HTTP / REST
+                            │
+                            ▼
+                 ┌─────────────────────┐
+                 │      FastAPI        │
+                 │      Backend        │
+                 └──────────┬──────────┘
+                            │
+             ┌──────────────┼──────────────┐
+             │              │              │
+             ▼              ▼              ▼
+      Authentication    AI Services    Complaint
+         System        & Intelligence   Management
+             │              │              │
+             └──────────────┼──────────────┘
+                            │
+                            ▼
+                 ┌─────────────────────┐
+                 │      Database       │
+                 │     Persistence     │
+                 └─────────────────────┘
 ```
 
 ---
@@ -192,7 +199,7 @@ CivicMind-AI/
 └── README.md
 ```
 
-> The project structure may contain additional supporting files and modules not shown in this simplified overview.
+> The project may contain additional supporting files and modules that are not shown in this simplified overview.
 
 ---
 
@@ -201,7 +208,7 @@ CivicMind-AI/
 ### 1. Clone the Repository
 
 ```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
+git clone https://github.com/najamrizvi/CivicMind-AI.git
 cd CivicMind-AI
 ```
 
@@ -237,16 +244,16 @@ pip install -r requirements.txt
 
 ### 5. Configure Environment Variables
 
-Create a `.env` file inside the backend directory and provide the required configuration values.
+Create a `.env` file inside the `backend` directory and provide the required configuration values.
 
 Example:
 
 ```env
-DATABASE_URL=your_database_url
-SECRET_KEY=your_secret_key
+DATABASE_URL=YOUR_DATABASE_URL
+SECRET_KEY=YOUR_SECRET_KEY
 ```
 
-> Never commit your `.env` file or other secrets to GitHub.
+> Never commit `.env` files, API keys, passwords, database credentials, or other secrets to GitHub.
 
 ### 6. Start the Backend
 
@@ -256,7 +263,7 @@ From the `backend` directory:
 uvicorn app.main:app --reload --port 8000
 ```
 
-The backend will be available at:
+The backend will normally be available at:
 
 ```text
 http://localhost:8000
@@ -296,7 +303,7 @@ http://localhost:5173
 
 ## 📡 API Documentation
 
-CivicMind AI uses FastAPI for its REST API.
+CivicMind AI uses FastAPI to provide its REST API.
 
 When the backend is running, interactive API documentation is available through:
 
@@ -349,15 +356,12 @@ Status Updates
    │
    ▼
 Resolution
-```
-
----
 
 ## 🧠 AI Workflow
 
-When a complaint is submitted, CivicMind AI processes the complaint information and generates useful intelligence for complaint management.
+When a complaint is submitted, CivicMind AI processes the complaint information and generates structured intelligence for complaint management.
 
-```text
+text
 Complaint Text
       │
       ▼
@@ -366,24 +370,19 @@ Text Processing
       ▼
 AI Analysis
       │
-      ├──────────────┐
-      ▼              ▼
-Category         Priority
-      │              │
-      └──────┬───────┘
-             ▼
-       Department
-        Routing
-             │
-             ▼
-      Complaint Record
-```
+      ├──────────────► Category
+      │
+      ├──────────────► Priority
+      │
+      └──────────────► Department
+                           │
+                           ▼
+                    Complaint Record
 
 This allows the system to transform an unstructured citizen complaint into structured information that can be used by the complaint-management system.
 
----
 
-## 🛡️ Security Considerations
+## 🔐 Security Considerations
 
 The project follows basic security practices including:
 
@@ -394,13 +393,12 @@ The project follows basic security practices including:
 * Protected administrative functionality
 * Backend API validation
 
-For production deployment, additional security hardening such as HTTPS, secure cookie/token configuration, rate limiting, and production-grade database security should also be considered.
+For production deployment, additional security hardening such as HTTPS, secure cookie/token configuration, rate limiting, and production-grade database security should be considered.
 
----
 
 ## 🧪 Testing
 
-Before deployment, the application was tested across its major workflows, including:
+The application was tested across its major workflows, including:
 
 * User registration
 * User login
@@ -410,13 +408,13 @@ Before deployment, the application was tested across its major workflows, includ
 * Priority prediction
 * Department routing
 * Complaint tracking
-* Status management
+* Complaint status management
 * Administrative functionality
 * Frontend/backend communication
+* Citizen profile management
 
 The application was also tested through the FastAPI API documentation and the frontend interface.
 
----
 
 ## 🚀 Deployment
 
@@ -426,40 +424,37 @@ CivicMind AI is designed as a separate frontend/backend application.
 
 The FastAPI backend can be deployed to a platform capable of running Python web applications.
 
-The production start command should follow the platform's assigned port:
+A production deployment can use:
 
-```bash
+bash
 uvicorn app.main:app --host 0.0.0.0 --port $PORT
-```
 
 ### Frontend
 
 The React/Vite frontend can be deployed to a static hosting platform.
 
-The production build can be generated using:
+Generate the production build using:
 
-```bash
+bash
 npm run build
-```
+
 
 The generated production files will be placed in:
 
-```text
+text
 frontend/dist/
-```
 
 ### Production Configuration
 
-Before deployment, update:
+Before deployment, configure:
 
-* Backend CORS configuration
+* Backend CORS settings
 * Frontend API URL
 * Database connection
 * Secret keys
 * Environment variables
 * Upload/storage configuration
 
----
 
 ## 📌 Important Notes
 
@@ -467,15 +462,13 @@ Before deployment, update:
 
 Backend:
 
-```text
+text
 http://localhost:8000
-```
 
 Frontend:
 
-```text
+text
 http://localhost:5173
-```
 
 The backend API is the central communication layer between the frontend, database, authentication system, and AI functionality.
 
@@ -531,6 +524,10 @@ Interested in:
 * Agentic AI
 * Full-Stack AI Applications
 
+### Repository
+
+[View CivicMind AI on GitHub](https://github.com/najamrizvi/CivicMind-AI)
+
 ---
 
 ## 📜 License
@@ -538,17 +535,3 @@ Interested in:
 This project was developed as an academic/project demonstration.
 
 If you intend to reuse, modify, or distribute the project, please add an appropriate open-source license to the repository.
-
----
-
-## ⭐ Acknowledgment
-
-Built as a practical AI-powered civic technology project with the goal of demonstrating the integration of:
-
-**AI + Backend Engineering + Frontend Development + Database Management + Real-World Problem Solving**
-
----
-
-### 🚀 CivicMind AI
-
-> **Turning citizen complaints into intelligent civic action.**
