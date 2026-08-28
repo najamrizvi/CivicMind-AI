@@ -71,6 +71,7 @@ function TrackIssue() {
       .replace(/_/g, " ");
 
     if (
+      normalized.includes("closed") ||
       normalized.includes("resolved") ||
       normalized.includes("completed")
     ) {
@@ -132,26 +133,17 @@ function TrackIssue() {
     setLoading(true);
 
     try {
-      // ------------------------------------------------------
-      // USE THE EXISTING COMPLAINT SERVICE
-      // ------------------------------------------------------
-
       const data =
         await complaintService.trackComplaint(
           cleanTrackingId
         );
 
       setComplaint(data);
-
     } catch (requestError) {
       console.error(
         "Complaint tracking error:",
         requestError
       );
-
-      // ------------------------------------------------------
-      // HTTP ERROR RESPONSE
-      // ------------------------------------------------------
 
       const status =
         requestError?.response?.status;
@@ -197,10 +189,6 @@ function TrackIssue() {
         return;
       }
 
-      // ------------------------------------------------------
-      // NETWORK / UNKNOWN ERROR
-      // ------------------------------------------------------
-
       if (!requestError?.response) {
         setError(
           "Unable to connect to CivicMind AI. Please make sure the backend server is running."
@@ -212,7 +200,6 @@ function TrackIssue() {
       setError(
         "Unable to retrieve complaint tracking information. Please try again."
       );
-
     } finally {
       setLoading(false);
     }
@@ -233,13 +220,26 @@ function TrackIssue() {
       .toLowerCase()
       .replace(/_/g, " ");
 
+    // -------------------------------------------------------
+    // RESOLUTION / FINAL STATUS
+    // -------------------------------------------------------
+
     const isResolved =
       normalizedStatus.includes("resolved") ||
-      normalizedStatus.includes("completed");
+      normalizedStatus.includes("completed") ||
+      normalizedStatus.includes("closed");
+
+    // -------------------------------------------------------
+    // ACTIVE WORK STATUS
+    // -------------------------------------------------------
 
     const isInProgress =
       normalizedStatus.includes("progress") ||
       normalizedStatus.includes("assigned");
+
+    // -------------------------------------------------------
+    // AI ANALYSIS
+    // -------------------------------------------------------
 
     const hasAnalysis =
       Boolean(
@@ -247,6 +247,17 @@ function TrackIssue() {
         complaint.priority ||
         complaint.department
       );
+
+    // -------------------------------------------------------
+    // DEPARTMENT ASSIGNMENT
+    // -------------------------------------------------------
+
+    const hasDepartment =
+      Boolean(complaint.department);
+
+    // -------------------------------------------------------
+    // TIMELINE
+    // -------------------------------------------------------
 
     return [
       {
@@ -292,21 +303,21 @@ function TrackIssue() {
         title: "Assigned to department",
 
         completed:
-          Boolean(complaint.department) &&
+          hasDepartment &&
           (isInProgress || isResolved),
 
         current:
-          Boolean(complaint.department) &&
+          hasDepartment &&
           !isResolved &&
           !isInProgress,
 
-        time: complaint.department
+        time: hasDepartment
           ? formatDateTime(
               complaint.last_updated
             )
           : "Awaiting assignment",
 
-        description: complaint.department
+        description: hasDepartment
           ? `Your complaint has been routed to ${complaint.department}.`
           : "Your complaint is awaiting assignment to the relevant civic department.",
       },
@@ -327,7 +338,9 @@ function TrackIssue() {
           : "Awaiting completion",
 
         description: isResolved
-          ? "Your complaint has been marked as resolved."
+          ? normalizedStatus.includes("closed")
+            ? "Your complaint has been resolved and the complaint record has been closed."
+            : "Your complaint has been marked as resolved."
           : "The complaint will be marked resolved once the responsible department completes the required action.",
       },
     ];
@@ -403,7 +416,7 @@ function TrackIssue() {
             }
           >
             <span className="track-sidebar-link-icon">
-              ▤
+              ◇
             </span>
 
             <span>My Complaints</span>
@@ -414,7 +427,7 @@ function TrackIssue() {
             className="track-sidebar-link active"
           >
             <span className="track-sidebar-link-icon">
-              ⌁
+              ◉
             </span>
 
             <span>Track Issue</span>
@@ -530,7 +543,7 @@ function TrackIssue() {
                   event.target.value
                 )
               }
-              placeholder="e.g. CMA-20260826-32D7A8"
+              placeholder="e.g. CMA-20260828-064A78"
               disabled={loading}
               autoComplete="off"
             />
@@ -567,7 +580,7 @@ function TrackIssue() {
             <section className="track-result-card track-empty-result">
 
               <div className="track-empty-icon">
-                ⌁
+                ◉
               </div>
 
               <span className="track-result-label">
