@@ -1,0 +1,7 @@
+[project]
+name = "civicmind-ai-backend"
+version = "1.0.0"
+requires-python = "==3.12.*"
+
+[tool.fastapi]
+entrypoint = "app.main:app"
